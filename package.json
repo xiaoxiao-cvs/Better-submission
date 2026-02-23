@@ -1,0 +1,154 @@
+{
+  "name": "better-submission",
+  "displayName": "Better Submission",
+  "description": "简洁快速与高度自定义的 AI 提交信息生成",
+  "version": "0.1.0",
+  "publisher": "xiaoxiao-cvs",
+  "license": "AGPL-3.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "llm",
+    "conventional-commits"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaoxiao-cvs/Better-submission"
+  },
+  "icon": "images/icon.png",
+  "main": "./dist/extension.js",
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "better-submission.generate",
+        "title": "生成提交消息",
+        "category": "Better Submission",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "better-submission.showStats",
+        "title": "查看 Token 统计",
+        "category": "Better Submission"
+      },
+      {
+        "command": "better-submission.resetStats",
+        "title": "重置 Token 统计",
+        "category": "Better Submission"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "better-submission.generate",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Better Submission",
+      "properties": {
+        "better-submission.apiUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "OpenAI 兼容 API 端点地址（支持 DeepSeek / 通义千问 / Ollama / vLLM 等）",
+          "order": 1
+        },
+        "better-submission.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API 密钥",
+          "order": 2
+        },
+        "better-submission.model": {
+          "type": "string",
+          "default": "gpt-4o",
+          "description": "模型名称（如 gpt-4o / deepseek-chat / qwen-turbo）",
+          "order": 3
+        },
+        "better-submission.commitFormat": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "提交信息格式模板。留空使用内置 Conventional Commits 格式。支持多行文本描述你期望的格式规范。",
+          "editPresentation": "multilineText",
+          "order": 4
+        },
+        "better-submission.systemPrompt": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "完全自定义系统提示词（设置后将覆盖内置提示词和格式模板）",
+          "editPresentation": "multilineText",
+          "order": 5
+        },
+        "better-submission.language": {
+          "type": "string",
+          "default": "zh-CN",
+          "description": "提交消息语言",
+          "enum": [
+            "zh-CN",
+            "en",
+            "ja"
+          ],
+          "enumDescriptions": [
+            "简体中文",
+            "English",
+            "日本語"
+          ],
+          "order": 6
+        },
+        "better-submission.maxDiffLength": {
+          "type": "number",
+          "default": 8000,
+          "description": "Diff 最大字符数（超出部分将被截断，防止消耗过多 Token）",
+          "minimum": 1000,
+          "maximum": 100000,
+          "order": 7
+        },
+        "better-submission.temperature": {
+          "type": "number",
+          "default": 0.3,
+          "description": "生成温度（0-2，越低越确定性）",
+          "minimum": 0,
+          "maximum": 2,
+          "order": 8
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node esbuild.mjs --production",
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "lint": "eslint src --ext ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "vsce package --no-dependencies",
+    "publish": "vsce publish --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "openai": "^4.70.0",
+    "simple-git": "^3.27.0"
+  }
+}
